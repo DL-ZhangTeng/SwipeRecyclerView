@@ -74,18 +74,22 @@ public class SlideMenuRecyclerViewItem extends HorizontalScrollView {
     }
 
     public void addContentView(View view) {
+        contentLayout.removeAllViews();
         contentLayout.addView(view);
     }
 
     public void addMenuView(View view) {
+        menuLayout.removeAllViews();
         menuLayout.addView(view);
     }
 
     public void addContentView(@LayoutRes int view) {
+        contentLayout.removeAllViews();
         contentLayout.addView(LayoutInflater.from(contentLayout.getContext()).inflate(view, this, false));
     }
 
     public void addMenuView(@LayoutRes int view) {
+        menuLayout.removeAllViews();
         menuLayout.addView(LayoutInflater.from(menuLayout.getContext()).inflate(view, this, false));
     }
 
