@@ -6,23 +6,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HeaderViewListAdapter;
 import android.widget.TextView;
 
+import com.zhangteng.swiperecyclerview.adapter.BaseAdapter;
 import com.zhangteng.swiperecyclerview.adapter.HeaderOrFooterAdapter;
+import com.zhangteng.swiperecyclerview.widget.ItemMoveTouchHelper;
 import com.zhangteng.swiperecyclerview.widget.SlideMenuRecyclerViewItem;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SwipeRecyclerViewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_swipe_recycler_view);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RecyclerView.Adapter adapter = new RecyclerView.Adapter() {
+        List list = new ArrayList<Integer>();
+        for (int i = 0; i < 100; i++) {
+            list.add(i);
+        }
+        RecyclerView.Adapter adapter = new BaseAdapter<Integer>(list) {
             @NonNull
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -31,14 +40,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                View contentView = LayoutInflater.from(SwipeRecyclerViewActivity.this).inflate(R.layout.content_item, ((MyViewHolder) holder).item, false);
                 //添加内容布局&菜单布局
-                ((MyViewHolder) holder).item.addContentView(R.layout.content_item);
+                ((TextView) contentView.findViewById(R.id.show)).setText(String.valueOf(data.get(position)));
+                ((MyViewHolder) holder).item.addContentView(contentView);
                 ((MyViewHolder) holder).item.addMenuView(R.layout.menu_item);
             }
 
             @Override
             public int getItemCount() {
-                return 100;
+                return data.size();
             }
 
             class MyViewHolder extends RecyclerView.ViewHolder {
@@ -51,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         //添加头部&脚步布局
-        HeaderOrFooterAdapter headerOrFooterAdapter = new HeaderOrFooterAdapter(adapter) {
+        HeaderOrFooterAdapter headerOrFooterAdapter = new HeaderOrFooterAdapter((BaseAdapter) adapter) {
             @Override
             public RecyclerView.ViewHolder createHeaderOrFooterViewHolder(Context context, View view) {
                 return new MyViewHolder(view);
@@ -76,5 +87,8 @@ public class MainActivity extends AppCompatActivity {
         headerOrFooterAdapter.addFootView(new TextView(this));
         headerOrFooterAdapter.addHeaderView(new TextView(this));
         recyclerView.setAdapter(headerOrFooterAdapter);
+
+        ItemMoveTouchHelper itemMoveTouchHelper = new ItemMoveTouchHelper(new ItemMoveTouchHelper.MoveTouchCallback());
+        itemMoveTouchHelper.attachToRecyclerView(recyclerView);
     }
 }

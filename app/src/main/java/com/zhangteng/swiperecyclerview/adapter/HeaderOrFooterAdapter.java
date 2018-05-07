@@ -15,7 +15,7 @@ import android.view.ViewGroup;
  * 在已有recyclerview基础上无需修改adapter情况下添加头脚视图
  * Created by swing on 2018/5/4.
  */
-public abstract class HeaderOrFooterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class HeaderOrFooterAdapter<T> extends BaseAdapter<T> {
 
     private static final int BASE_ITEM_TYPE_HEADER = 100000;
     private static final int BASE_ITEM_TYPE_FOOTER = 200000;
@@ -25,7 +25,8 @@ public abstract class HeaderOrFooterAdapter extends RecyclerView.Adapter<Recycle
 
     private RecyclerView.Adapter mInnerAdapter;
 
-    public HeaderOrFooterAdapter(RecyclerView.Adapter mInnerAdapter) {
+    public HeaderOrFooterAdapter(BaseAdapter mInnerAdapter) {
+        super(mInnerAdapter.data);
         this.mInnerAdapter = mInnerAdapter;
     }
 
@@ -129,18 +130,22 @@ public abstract class HeaderOrFooterAdapter extends RecyclerView.Adapter<Recycle
 
 
     public void addHeaderView(View view) {
+        hasHeaderOrFooter = true;
         mHeaderViews.put(mHeaderViews.size() + BASE_ITEM_TYPE_HEADER, view);
     }
 
     public void addFootView(View view) {
+        hasHeaderOrFooter = true;
         mFootViews.put(mFootViews.size() + BASE_ITEM_TYPE_FOOTER, view);
     }
 
     public void addHeaderView(Context context, @LayoutRes int view) {
+        hasHeaderOrFooter = true;
         mHeaderViews.put(mHeaderViews.size() + BASE_ITEM_TYPE_HEADER, LayoutInflater.from(context).inflate(view, null, false));
     }
 
     public void addFootView(Context context, @LayoutRes int view) {
+        hasHeaderOrFooter = true;
         mFootViews.put(mFootViews.size() + BASE_ITEM_TYPE_FOOTER, LayoutInflater.from(context).inflate(view, null, false));
     }
 
